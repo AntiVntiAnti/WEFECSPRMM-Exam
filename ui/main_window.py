@@ -118,23 +118,23 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
     
     def switch_to_page0(self):
         self.stackedWidget.setCurrentWidget(self.mm_page)
-        self.resize(155, 300)
-        self.setFixedSize(155, 300)
+        self.resize(145, 265)
+        self.setFixedSize(145, 265)
     
     def switch_to_page1(self):
         self.stackedWidget.setCurrentWidget(self.wefe_page)
-        self.resize(155, 300)
-        self.setFixedSize(155, 300)
+        self.resize(145, 265)
+        self.setFixedSize(145, 265)
     
     def switch_to_page2(self):
         self.stackedWidget.setCurrentWidget(self.cspr_page)
-        self.resize(155, 300)
-        self.setFixedSize(155, 300)
+        self.resize(145, 265)
+        self.setFixedSize(145, 265)
     
     def switch_to_page4(self):
         self.stackedWidget.setCurrentWidget(self.data_page)
-        self.setFixedSize(850, 450)
         self.resize(850, 450)
+        self.setFixedSize(850, 450)
     
     # ////////////////////////////////////////////////////////////////////////////////////////
     # Minder Navigation
