@@ -2,7 +2,8 @@ from PyQt6.QtWidgets import QApplication
 from ui.main_window import MainWindow
 import sys
 from logger_setup import logger
-# pyrcc5 resources.qrc -o resources.py
+# pyrcc5 resources.qrc -o resources.py 
+# lol I would always forget this command, so it's just stuck at my entry point lol 
 
 
 def run_app():

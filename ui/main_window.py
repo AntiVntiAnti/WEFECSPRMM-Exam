@@ -3,20 +3,16 @@ from PyQt6 import QtWidgets
 from PyQt6.QtCore import QDate, QSettings, QTime, Qt, QByteArray, QDateTime
 from PyQt6.QtGui import QCloseEvent
 
+# one day, I will yaml or .ini this :D 
 import tracker_config as tkc
-# ////////////////////////////////////////////////////////////////////////////////////////
-# UI
-# ////////////////////////////////////////////////////////////////////////////////////////
+
+# gui gui gui gooey gui
 from ui.main_ui.gui import Ui_MainWindow
 
-# ////////////////////////////////////////////////////////////////////////////////////////
-# LOGGER
-# ////////////////////////////////////////////////////////////////////////////////////////
+# my goofy logger setup
 from logger_setup import logger
 
-# ////////////////////////////////////////////////////////////////////////////////////////
-# NAVIGATION
-# ////////////////////////////////////////////////////////////////////////////////////////
+# navvy navvy navvy :D
 from navigation.master_navigation import change_stack_page
 
 # Window geometry and frame
@@ -29,9 +25,6 @@ from utility.app_operations.show_hide import toggle_views
 from utility.widgets_set_widgets.slider_spinbox_connections import (
     connect_slider_spinbox)
 
-# ////////////////////////////////////////////////////////////////////////////////////////
-# DATABASE Magicks w/ Wizardry & Necromancy
-# ////////////////////////////////////////////////////////////////////////////////////////
 # Database connections
 from database.database_manager import (
     DataManager)
@@ -44,16 +37,27 @@ from database.database_utility.delete_records import (
 from database.database_utility.model_setup import (
     create_and_set_model)
 
-# ////////////////////////////////////////////////////////////////////////////////////////
-# ADD DATA MODULES
-# ////////////////////////////////////////////////////////////////////////////////////////
+# add data modules
 from database.wefe_add_data import add_wefe_data
 from database.mental_mental import add_mentalsolo_data
 from database.cspr import add_cspr_data
 
 
 class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
-    
+    """
+    The main window of the application.
+
+    Inherits from FramelessWindow, QtWidgets.QMainWindow, and Ui_MainWindow.
+
+    Attributes:
+        mental_mental_model: The mental mental model.
+        cspr_model: The CSPR model.
+        wefe_model: The WEFE model.
+        ui: The UI object.
+        db_manager: The data manager object.
+        settings: The QSettings object.
+    """
+
     def __init__(self,
                  *args,
                  **kwargs):
@@ -89,6 +93,16 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
         self.energy_slider.valueChanged.connect(self.update_beck_summary)
     
     def auto_datettime(self) -> None:
+        """
+        Sets the current date and time for various widgets.
+
+        This method sets the current date and time for the `mental_mental_time`,
+        `mental_mental_date`, `wefe_time`, `wefe_date`, `cspr_time`, and `cspr_date`
+        widgets to the current system date and time.
+
+        Returns:
+            None
+        """
         self.mental_mental_time.setTime(QTime.currentTime())
         self.mental_mental_date.setDate(QDate.currentDate())
         self.wefe_time.setTime(QTime.currentTime())
@@ -97,49 +111,106 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
         self.cspr_date.setDate(QDate.currentDate())
     
     def update_beck_summary(self):
-        """
-        updates the averages of the sliders in the wellbeing and pain module such that
-        the overall is the avg of the whole
-        :return:
-        """
-        try:
+            """
+            Updates the averages of the sliders in the wellbeing and pain module such that
+            the overall is the average of the whole.
             
-            values = [slider.value() for slider in
-                      [self.wellbeing_slider, self.excite_slider, self.focus_slider,
-                       self.energy_slider] if
-                      slider.value() > 0]
+            :return: None
+            """
+            try:
+                values = [slider.value() for slider in
+                          [self.wellbeing_slider, self.excite_slider, self.focus_slider,
+                           self.energy_slider] if
+                          slider.value() > 0]
+                
+                s = sum(values)
+                
+                self.summing_box.setValue(int(s))
             
-            s = sum(values)
-            
-            self.summing_box.setValue(int(s))
-        
-        except Exception as e:
-            logger.error(f"{e}", exc_info=True)
+            except Exception as e:
+                logger.error(f"{e}", exc_info=True)
     
     def switch_to_page0(self):
+        """
+        Switches to page 0 in the stacked widget and adjusts the window size.
+
+        This method sets the current widget of the stacked widget to the mm_page,
+        which represents page 0. It also resizes the window to a width of 145 and
+        a height of 265, and fixes the window size to prevent further resizing.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         self.stackedWidget.setCurrentWidget(self.mm_page)
         self.resize(145, 265)
         self.setFixedSize(145, 265)
     
     def switch_to_page1(self):
+        """
+        Switches the current widget to the 'wefe_page' and resizes the window.
+
+        This method sets the current widget of the stackedWidget to the 'wefe_page',
+        and then resizes the window to a fixed size of 145x265 pixels.
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         self.stackedWidget.setCurrentWidget(self.wefe_page)
         self.resize(145, 265)
         self.setFixedSize(145, 265)
     
     def switch_to_page2(self):
+        """
+        Switches the current widget to the cspr_page and resizes the window.
+
+        This method sets the current widget of the stackedWidget to the cspr_page,
+        and resizes the window to a fixed size of 145x265 pixels.
+
+        Parameters:
+        None
+
+        Returns:
+        None
+        """
         self.stackedWidget.setCurrentWidget(self.cspr_page)
         self.resize(145, 265)
         self.setFixedSize(145, 265)
     
     def switch_to_page4(self):
+        """
+        Switches the current widget to the data page and sets the window size to 850x450.
+
+        This method is responsible for changing the current widget in the stacked widget to the data page.
+        It also resizes the window to a fixed size of 850x450.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
         self.stackedWidget.setCurrentWidget(self.data_page)
         self.resize(850, 450)
         self.setFixedSize(850, 450)
-    
-    # ////////////////////////////////////////////////////////////////////////////////////////
-    # Minder Navigation
-    # ////////////////////////////////////////////////////////////////////////////////////////
+
     def stack_navigation(self):
+        """
+        Connects the actions to their respective pages in the stacked widget.
+
+        This method connects the actions (self.actionShowMM, self.actionShowWEFE, self.actionShowCSPR, self.actionShowData)
+        to their respective pages (0, 1, 2, 3) in the stacked widget (self.stackedWidget). When an action is triggered,
+        it calls the `change_stack_page` function with the stacked widget and the corresponding page as arguments.
+
+        Raises:
+            Exception: If an error occurs during the connection process.
+
+        """
         try:
             change_stack_pages = {
                 self.actionShowMM: 0,
@@ -149,16 +220,23 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
             }
             
             for action, page in change_stack_pages.items():
-                action.triggered.connect(lambda _,
-                                                p=page: change_stack_page(self.stackedWidget, p))
+                action.triggered.connect(lambda _, p=page: change_stack_page(self.stackedWidget, p))
         
         except Exception as e:
             logger.error(f"An error has occurred: {e}", exc_info=True)
     
-    # ////////////////////////////////////////////////////////////////////////////////////////
-    # APP-OPERATIONS setup
-    # ////////////////////////////////////////////////////////////////////////////////////////
     def app_operations(self):
+        """
+        Performs the necessary setup operations for the application.
+
+        This method connects the appropriate signals to their respective slots,
+        sets the current index of the stacked widget based on the last saved index,
+        and connects the actions to their corresponding page switches.
+
+        Raises:
+            Exception: If an error occurs during the setup process.
+
+        """
         try:
             self.stackedWidget.currentChanged.connect(self.on_page_changed)
             last_index = self.settings.value("lastPageIndex", 0, type=int)
@@ -171,8 +249,7 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as e:
             logger.error(f"Error occurred while setting up app_operations : {e}", exc_info=True)
     
-    def on_page_changed(self,
-                        index):
+    def on_page_changed(self, index):
         """
         Callback method triggered when the page is changed in the UI.
 
@@ -189,14 +266,30 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
             logger.error(f"{e}", exc_info=True)
     
     def commits(self):
+        """
+        Executes the commit methods for mental_mental_table, cspr, and wefe.
+
+        This method calls the following methods:
+        - mental_mental_table_commit()
+        - cspr_commit()
+        - wefe_commit()
+        """
         self.mental_mental_table_commit()
         self.cspr_commit()
         self.wefe_commit()
     
-    # ////////////////////////////////////////////////////////////////////////////////////////
-    # SLIDER UPDATES SPINBOX/VICE VERSA SETUP
-    # ////////////////////////////////////////////////////////////////////////////////////////
     def slider_set_spinbox(self):
+        """
+        Connects sliders to their corresponding spinboxes.
+
+        This method connects each slider to its corresponding spinbox using a dictionary.
+        The dictionary maps each slider object to its corresponding spinbox object.
+        It then iterates over the dictionary and calls the `connect_slider_spinbox` function
+        to establish the connection between each slider and spinbox.
+
+        Returns:
+            None
+        """
         connect_slider_to_spinbox = {
             self.wellbeing_slider: self.wellbeing_spinbox,
             self.excite_slider: self.excite_spinbox,
@@ -239,6 +332,12 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
             logger.error(f"An Error has occurred {e}", exc_info=True)
     
     def cspr_commit(self) -> None:
+        """
+        Connects the 'Commit CSPR' action to the 'add_cspr_data' function and inserts the CSPR exam data into the database.
+
+        Raises:
+            Exception: If an error occurs during the execution of the method.
+        """
         try:
             self.actionCommitCSPR.triggered.connect(
                 lambda: add_cspr_data(
@@ -256,6 +355,13 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
             logger.error(f"An Error has occurred {e}", exc_info=True)
     
     def wefe_commit(self) -> None:
+        """
+        Connects the actionCommitWEFE signal to the add_wefe_data function with the specified parameters.
+        Inserts the WEFE data into the WEFE table using the db_manager.
+
+        Raises:
+            Exception: If an error occurs during the process.
+        """
         try:
             self.actionCommitWEFE.triggered.connect(
                 lambda: add_wefe_data(
@@ -274,6 +380,18 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
             logger.error(f"An Error has occurred {e}", exc_info=True)
     
     def delete_group(self):
+        """
+        Connects the 'Delete' action to the corresponding delete_selected_rows function for multiple table views.
+
+        This method connects the 'Delete' action to the delete_selected_rows function for multiple table views.
+        It sets up the connections for deleting selected rows in the 'wefe_tableview', 'cspr_tableview', and 'mental_mental_table'.
+
+        Parameters:
+        - self: The instance of the main window.
+
+        Returns:
+        None
+        """
         self.actionDelete.triggered.connect(
             lambda: delete_selected_rows(
                 self,
@@ -297,6 +415,15 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
         )
     
     def setup_models(self) -> None:
+        """
+        Sets up the models for the different table views in the main window.
+
+        This method creates and sets the models for the 'wefe_tableview', 'cspr_tableview',
+        and 'mental_mental_table' table views.
+
+        Returns:
+            None
+        """
         self.wefe_model = create_and_set_model(
             "wefe_table",
             self.wefe_tableview
@@ -311,8 +438,16 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
         )
     
     def save_state(self):
-        
-        # save window geometry state
+        """
+        Saves the window geometry state and window state.
+
+        This method saves the current geometry and state of the window
+        using the QSettings object. It saves the window geometry state
+        and the window state separately.
+
+        Raises:
+            Exception: If there is an error while saving the window geometry state or window state.
+        """
         try:
             self.settings.setValue("geometry", self.saveGeometry())
         except Exception as e:
@@ -323,6 +458,15 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
             logger.error(f"Error saving the minds_module geo{e}", exc_info=True)
     
     def restore_state(self) -> None:
+        """
+        Restores the window geometry and state.
+
+        This method restores the previous geometry and state of the window
+        based on the values stored in the settings.
+
+        Raises:
+            Exception: If there is an error restoring the window geometry or state.
+        """
         try:
             # restore window geometry state
             self.restoreGeometry(self.settings.value("geometry", QByteArray()))
@@ -334,8 +478,7 @@ class MainWindow(FramelessWindow, QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as e:
             logger.error(f"Error restoring WINDOW STATE {e}", exc_info=True)
     
-    def closeEvent(self,
-                   event: QCloseEvent) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         """
         Event handler for the close event of the window.
 

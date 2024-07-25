@@ -67,41 +67,45 @@ class DataManager:
         """
         Sets up the necessary tables in the database.
 
+        This method calls the following setup methods:
+        - setup_wefe_table: Sets up the WEFE table.
+        - setup_into_cspr_exam: Sets up the INTO CSPR exam table.
+        - setup_mental_mental_table: Sets up the Mental Mental table.
         """
         self.setup_wefe_table()
         self.setup_into_cspr_exam()
         self.setup_mental_mental_table()
     
     def setup_mental_mental_table(self) -> None:
-        """
-        Sets up the 'mental_mental_table' in the database if it doesn't already exist.
+            """
+            Sets up the 'mental_mental_table' in the database if it doesn't already exist.
 
-        This method creates a table named 'mental_mental_table' in the database with the following columns:
-        - id: INTEGER (Primary Key, Autoincrement)
-        - mental_mental_date: TEXT
-        - mental_mental_time: TEXT
-        - mood_slider: INTEGER
-        - mania_slider: INTEGER
-        - depression_slider: INTEGER
-        - mixed_risk_slider: INTEGER
+            This method creates a table named 'mental_mental_table' in the database with the following columns:
+            - id: INTEGER (Primary Key, Autoincrement)
+            - mental_mental_date: TEXT
+            - mental_mental_time: TEXT
+            - mood_slider: INTEGER
+            - mania_slider: INTEGER
+            - depression_slider: INTEGER
+            - mixed_risk_slider: INTEGER
 
-        If the table already exists, this method does nothing.
+            If the table already exists, this method does nothing.
 
-        Returns:
-            None
-        """
-        if not self.query.exec(f"""
-                            CREATE TABLE IF NOT EXISTS mental_mental_table (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            mental_mental_date TEXT,
-                            mental_mental_time TEXT,
-                            mood_slider INTEGER,
-                            mania_slider INTEGER,
-                            depression_slider INTEGER,
-                            mixed_risk_slider INTEGER
-                            )"""):
-            logger.error(f"Error creating table: mental_mental_table",
-                         self.query.lastError().text())
+            Returns:
+                None
+            """
+            if not self.query.exec(f"""
+                                CREATE TABLE IF NOT EXISTS mental_mental_table (
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                mental_mental_date TEXT,
+                                mental_mental_time TEXT,
+                                mood_slider INTEGER,
+                                mania_slider INTEGER,
+                                depression_slider INTEGER,
+                                mixed_risk_slider INTEGER
+                                )"""):
+                logger.error(f"Error creating table: mental_mental_table",
+                             self.query.lastError().text())
     
     def insert_into_mental_mental_table(self,
                                         mental_mental_date: int,
@@ -156,16 +160,31 @@ class DataManager:
             logger.error(f"Error during data insertion: mental_mental_table {e}", exc_info=True)
     
     def setup_into_cspr_exam(self) -> None:
+        """
+        Sets up the cspr_table in the database if it doesn't already exist.
+
+        This method creates the cspr_table in the database with the following columns:
+        - id: INTEGER (Primary Key, Autoincrement)
+        - cspr_date: TEXT
+        - cspr_time: TEXT
+        - calm_slider: INTEGER
+        - stress_slider: INTEGER
+        - pain_slider: INTEGER
+        - rage_slider: INTEGER
+
+        Returns:
+            None
+        """
         if not self.query.exec(f"""
-                            CREATE TABLE IF NOT EXISTS cspr_table (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            cspr_date TEXT,
-                            cspr_time TEXT,
-                            calm_slider INTEGER,
-                            stress_slider INTEGER,
-                            pain_slider INTEGER,
-                            rage_slider INTEGER
-                            )"""):
+                        CREATE TABLE IF NOT EXISTS cspr_table (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        cspr_date TEXT,
+                        cspr_time TEXT,
+                        calm_slider INTEGER,
+                        stress_slider INTEGER,
+                        pain_slider INTEGER,
+                        rage_slider INTEGER
+                        )"""):
             logger.error(f"Error creating table: cspr_table",
                          self.query.lastError().text())
     
@@ -177,7 +196,25 @@ class DataManager:
                               pain_slider: int,
                               rage_slider: int
                               ) -> None:
-        
+        """
+        Inserts a new record into the cspr_table.
+
+        Args:
+            cspr_date (str): The date of the CSRP exam.
+            cspr_time (str): The time of the CSRP exam.
+            calm_slider (int): The value of the calm slider.
+            stress_slider (int): The value of the stress slider.
+            pain_slider (int): The value of the pain slider.
+            rage_slider (int): The value of the rage slider.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If the number of bind values does not match the expected number of placeholders in the SQL query.
+            Exception: If there is an error during data insertion.
+
+        """
         sql: str = f"""INSERT INTO cspr_table(
             cspr_date,
             cspr_time,
@@ -185,7 +222,7 @@ class DataManager:
             stress_slider,
             pain_slider,
             rage_slider) VALUES (?, ?, ?, ?, ?, ?)"""
-        
+
         bind_values: List[Union[str, int]] = [cspr_date, cspr_time,
                                               calm_slider, stress_slider, pain_slider, rage_slider]
         try:
@@ -204,19 +241,35 @@ class DataManager:
             logger.error(f"Error during data insertion: cspr_table {e}", exc_info=True)
     
     def setup_wefe_table(self) -> None:
-        if not self.query.exec(f"""
-                        CREATE TABLE IF NOT EXISTS wefe_table (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        wefe_date TEXT,
-                        wefe_time TEXT,
-                        wellbeing_slider INTEGER,
-                        excite_slider INTEGER,
-                        focus_slider INTEGER,
-                        energy_slider INTEGER,
-                        summing_box INTEGER
-                        )"""):
-            logger.error(f"Error creating table: wefe_table",
-                         self.query.lastError().text())
+            """
+            Sets up the 'wefe_table' in the database if it doesn't already exist.
+
+            This method creates the 'wefe_table' with the following columns:
+            - id: INTEGER (Primary Key, Autoincrement)
+            - wefe_date: TEXT
+            - wefe_time: TEXT
+            - wellbeing_slider: INTEGER
+            - excite_slider: INTEGER
+            - focus_slider: INTEGER
+            - energy_slider: INTEGER
+            - summing_box: INTEGER
+
+            Returns:
+                None
+            """
+            if not self.query.exec(f"""
+                            CREATE TABLE IF NOT EXISTS wefe_table (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            wefe_date TEXT,
+                            wefe_time TEXT,
+                            wellbeing_slider INTEGER,
+                            excite_slider INTEGER,
+                            focus_slider INTEGER,
+                            energy_slider INTEGER,
+                            summing_box INTEGER
+                            )"""):
+                logger.error(f"Error creating table: wefe_table",
+                             self.query.lastError().text())
     
     def insert_into_wefe_table(self,
                                wefe_date: str,
@@ -227,7 +280,21 @@ class DataManager:
                                energy_slider: int,
                                summing_box: int
                                ) -> None:
-        
+        """
+        Inserts data into the wefe_table.
+
+        Args:
+            wefe_date (str): The date of the entry.
+            wefe_time (str): The time of the entry.
+            wellbeing_slider (int): The value of the wellbeing slider.
+            excite_slider (int): The value of the excite slider.
+            focus_slider (int): The value of the focus slider.
+            energy_slider (int): The value of the energy slider.
+            summing_box (int): The value of the summing box.
+
+        Returns:
+            None
+        """
         sql: str = f"""INSERT INTO wefe_table(
         wefe_date,
         wefe_time,
@@ -268,6 +335,7 @@ def close_database(self) -> None:
     If the connection is already closed or an error occurs while closing the
     connection, an exception is logged.
 
+    :return: None
     """
     try:
         logger.info("if database is open")

@@ -1,21 +1,21 @@
 from PyQt6.QtCore import QDate, QTime
 import tracker_config as tkc
 from logger_setup import logger
+from typing import Dict, Any, Callable, Tuple, Optional, List
 
-
-def add_mentalsolo_data(main_window_instance, widget_names, db_insert_method):
+def add_mentalsolo_data(main_window_instance: object, widget_names: Dict[str, str], db_insert_method: Callable[..., None]) -> None:
     """
     Add mental solo data to the database.
 
     Args:
-        main_window_instance: The instance of the main window.
-        widget_names: A dictionary containing the names of the widgets.
-        db_insert_method: The method used to insert data into the database.
+        main_window_instance (object): The instance of the main window.
+        widget_names (dict): A dictionary containing the names of the widgets.
+        db_insert_method (function): The method used to insert data into the database.
 
     Returns:
         None
     """
-    widget_methods = {
+    widget_methods: Dict[str, Tuple[Optional[str], str, Optional[str]]] = {
         widget_names['mental_mental_date']: (None, 'date', "yyyy-MM-dd"),
         widget_names['mental_mental_time']: (None, 'time', "hh:mm:ss"),
         widget_names['mood_slider']: (None, 'value', None),
@@ -24,7 +24,7 @@ def add_mentalsolo_data(main_window_instance, widget_names, db_insert_method):
         widget_names['mixed_risk_slider']: (None, 'value', None),        
     }
 
-    data_to_insert = []
+    data_to_insert: List[Any] = []
     for widget_name, (widget_attr, method, format_type) in widget_methods.items():
         widget = getattr(main_window_instance, widget_name)
         try:
@@ -42,13 +42,13 @@ def add_mentalsolo_data(main_window_instance, widget_names, db_insert_method):
         logger.error(f"Error inserting data into the database: {e}")
 
 
-def reset_mental_mental(main_window_instance, widget_names):
+def reset_mental_mental(main_window_instance: object, widget_names: Dict[str, str]) -> None:
     """
     Reset the values of the mental_mental form in the main window.
 
     Args:
-        main_window_instance: An instance of the main window.
-        widget_names: A dictionary containing the names of the widgets used in the mental_mental form.
+        main_window_instance (object): An instance of the main window.
+        widget_names (dict): A dictionary containing the names of the widgets used in the mental_mental form.
 
     Raises:
         Exception: If there is an error resetting the form.
