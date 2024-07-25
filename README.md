@@ -21,3 +21,4 @@ here's the MM Mental Mental, super creative name I take GREATEST PRIDE IN NAMES 
 ![Mental Mental HORZ](https://github.com/user-attachments/assets/c3612119-c456-4a65-b36b-bcb69fd9144c)
 ![MM Vertical](https://github.com/user-attachments/assets/a0ab1ce0-31d5-46da-a494-d2dc123a7dc1)
 
+OH also take notice how the names of the labels that needn't ever have been(in the first place, like, what purpose did they serve? NONE! I had plans than remembered, MATHS MAN! YOU NEED TO LEARN/DO THE MATHS! Also sorry I'm all over the place O.o)
